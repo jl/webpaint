@@ -1,11 +1,18 @@
 #!/usr/bin/env python
-import logging
-import webapp2
 
+# Standard library imports. These come with Python out of the box.
+import logging
+
+# App Engine-specific imports.
+import webapp2
 from webapp2_extras import jinja2
 
 
 class BaseHandler(webapp2.RequestHandler):
+    """Base handler for all web requests.
+
+    Enables access to the jinja templating system.
+    """
     @webapp2.cached_property
     def jinja2(self):
         return jinja2.get_jinja2(app=self.app)
@@ -25,6 +32,12 @@ class PaintHandler(BaseHandler):
         self.render_template('paint.html')
 
 
-app = webapp2.WSGIApplication([('/', MainHandler),
-                               (r'/(\d+)', PaintHandler)],
-                              debug=True)
+# Handler is an array of tuples which maps URLs to request handler classes.
+HANDLERS = [
+    ('/', MainHandler),
+    (r'/(\d+)', PaintHandler),
+]
+
+
+# The following global object is expected by the app engine sdk (see app.yaml).
+app = webapp2.WSGIApplication(HANDLERS, debug=True)
