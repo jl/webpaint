@@ -1,0 +1,143 @@
+<!doctype html>
+<html>
+<head>
+  <title>Paint</title>
+  <style type="text/css">
+    #myCanvas {
+      border: solid 1px gray;
+      cursor: crosshair;
+    }
+    #palette div {
+      /* #palette's children that are div's */
+      width: 20px;
+      height: 20px;
+      /* horizontal flow layout instead of vertical stack */
+      float: left;
+      /* add a border so we can see even white palette */
+      border: solid 1px gray;
+      /* put some space between the palette squares */
+      margin-right: 3px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Paint</h1>
+  <div>
+    <!-- Put canvas in its own div so other elements stack above and below it.
+    Note: canvas requires a "modern" browser. -->
+    <canvas id="myCanvas" width="500" height="300"></canvas>
+  </div>
+  <div id="palette">
+    <!-- Palette elements will be inserted here. -->
+  </div>
+
+  <script>
+    // Find the element in our HTML with an id of 'myCanvas'.
+    var myCanvas = document.getElementById('myCanvas');
+    var palette = document.getElementById('palette');
+
+    // We call the function getContext('2d') on the canvas object
+    // to get a "drawing context" which exposes drawing functions
+    // such as fillRect().
+    var ctx = myCanvas.getContext('2d');
+
+    // Keep track of whether we should be drawing because mouse button is
+    // currently being held down.
+    var isDrawing = false;
+
+    // Save the current drawing color which is used for fillStyle on pixels
+    // and set by clicking on a palette element.
+    var currentColor = '#000000';
+    var currentRadius = 5;
+
+    // This function is called repeatedly as the mouse moves.
+    // The parameter e is the event object which contains
+    // information such as mouse coordinates.
+    // More reading about functions and parameters:
+    //   http://www.quirksmode.org/js/function.html
+    //   http://eloquentjavascript.net/chapter3.html
+    function drawSomething(e) {
+      // offsetX and offsetY are the mouse offsets form the upper-
+      // left corner of the canvas. We log them to the console to
+      // debug their values. Note that console.log() can take
+      // multiple parameters, it will print them all out in a
+      // single line.
+      var x = e.offsetX;
+      var y = e.offsetY;
+
+      // Use the current global color as our drawing color.
+      // The value of currentColor is changed by clicking on palette divs.
+      ctx.fillStyle = currentColor;
+
+      // Draw a 5x5 rectangle at the mouse coordinates.
+      ctx.fillRect(x - currentRadius, y - currentRadius,
+                   currentRadius * 2, currentRadius * 2);
+      console.log('x', x, 'y', y, ctx.fillStyle);
+    };
+
+    function onMouseMove(e) {
+      if (isDrawing) {
+        drawSomething(e);
+      }
+    }
+
+    function onMouseDown(e) {
+      isDrawing = true;
+      // We forward the mouse event to drawSomething so that even if the user
+      // presses the mouse down but doesn't move, at least one dot is drawn.
+      drawSomething(e);
+      return false;
+    }
+
+    function onMouseUp(e) {
+      isDrawing = false;
+    }
+
+    function addColor(color) {
+      console.log(color);
+      var newDiv = document.createElement('div');
+      newDiv.style.backgroundColor = color;
+
+      // Note that because the following function is created inline, it can
+      // reference the "color" parameter in the scope of the enclosing
+      // function. This is called a "closure" in programming -- when the
+      // user activates this function at a future point in time, it will
+      // reference the correct color at the time this function was created.
+      newDiv.onclick = function(e) {
+        console.log(color);  // For debugging.
+        currentColor = color;
+      };
+
+      // Add the new div as a child element of palette element.
+      // When elements such as div's are nested, we use the following terms:
+      //   <div id="a">
+      //     <div id="b"></div>
+      //     <div id="c"></div>
+      //   </div>
+      //   a is parent of b and c.
+      //   b and c are children of a.
+      //   b and c are siblings.
+      //   a.appendChild(...) will insert an element after c but inside a.
+      palette.appendChild(newDiv);
+    }
+
+    // Event handler wiring.
+    myCanvas.onmousemove = onMouseMove;
+    myCanvas.onmousedown = onMouseDown;
+    myCanvas.onmouseup = onMouseUp;
+
+    // Add palette entries of various colors.
+    // Bonus: Lookup your favorite colors and add them here.
+    addColor('rgb(0,0,0)');
+    addColor('rgb(255,255,255)');
+    addColor('#ff0000');
+    addColor('#ffa500');
+    addColor('#ffff00');
+    addColor('#008000');
+    addColor('blue');
+    addColor('indigo');
+    addColor('violet');
+  </script>
+</body>
+</html>
