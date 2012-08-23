@@ -7,6 +7,9 @@ import logging
 import webapp2
 from webapp2_extras import jinja2
 
+# Imports for our own code.
+import util
+
 
 class BaseHandler(webapp2.RequestHandler):
     """Base handler for all web requests.
@@ -23,13 +26,14 @@ class BaseHandler(webapp2.RequestHandler):
 
 class MainHandler(BaseHandler):
     def get(self):
-        self.render_template('index.html')
+        paint_id = util.random_id()
+        self.render_template('index.html', paint_id=paint_id)
 
 
 class PaintHandler(BaseHandler):
     def get(self, paint_id):
         logging.info('paint_id is ' + paint_id)
-        self.render_template('paint.html')
+        self.render_template('paint.html', paint_id=paint_id)
 
 
 # Handler is an array of tuples which maps URLs to request handler classes.
