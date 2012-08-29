@@ -26,7 +26,7 @@ class BaseHandler(webapp2.RequestHandler):
 
 class MainHandler(BaseHandler):
     def get(self):
-        paint_id = util.random_id()
+        paint_id = util.random_alphanum(5)
         self.render_template('index.html', paint_id=paint_id)
 
 
@@ -39,7 +39,10 @@ class PaintHandler(BaseHandler):
 # Handler is an array of tuples which maps URLs to request handler classes.
 HANDLERS = [
     ('/', MainHandler),
-    (r'/(\d+)', PaintHandler),
+    # The following regular expression only matches paint id's after /p/
+    # composed entirely of letters, numbers, dash, or underscore, and with a
+    # length between 3 and 100.
+    (r'/p/([A-Za-z0-9_-]{3,100})', PaintHandler),
 ]
 
 

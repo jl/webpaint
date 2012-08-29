@@ -2,6 +2,9 @@
 import random
 
 
-def random_id():
-    """Returns a random integer between one and a million."""
-    return random.randint(1, 1000000)
+ALPHANUM = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+
+
+def random_alphanum(count):
+    """Returns a random alphanumeric string."""
+    return ''.join((random.choice(ALPHANUM) for i in xrange(count)))
