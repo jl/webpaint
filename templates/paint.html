@@ -3,15 +3,16 @@
 <head>
   <title>Painting {{paint_id}}</title>
   <style type="text/css">
+    body {
+      color: #ddd;
+      background-color: #666;
+    }
     #stack {
       /* We explicitly set size of stack, upon which all layer img
          and canvas goes, to exact size of our canvas. */
-      width: 500px;
-      height: 300px;
-      /* This is a better place for border instead of canvas -- this
-         way img layers and canvas have simpler css instead of having
-         to define the same border in both places. */
-      border: solid 5px #888;
+      width: 320px;
+      height: 320px;
+      background-color: white;
     }
     #stack img {
       /* Each layer is a child img snapshot of canvas that is placed
