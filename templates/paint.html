@@ -6,6 +6,7 @@
     #myCanvas {
       border: solid 1px gray;
       cursor: crosshair;
+      position: absolute;
     }
     #palette div {
       /* #palette's children that are div's */
@@ -19,11 +20,17 @@
       margin-right: 3px;
       cursor: pointer;
     }
+    #stack {
+      height: 310px;
+    }
+    #stack img {
+      position: absolute;
+    }
   </style>
 </head>
 <body>
   <h1>Painting {{paint_id}}</h1>
-  <div>
+  <div id="stack">
     <!-- Put canvas in its own div so other elements stack above and below it.
     Note: canvas requires a "modern" browser. -->
     <canvas id="myCanvas" width="500" height="300"></canvas>
@@ -36,6 +43,7 @@
     // Find the element in our HTML with an id of 'myCanvas'.
     var myCanvas = document.getElementById('myCanvas');
     var palette = document.getElementById('palette');
+    var stack = document.getElementById('stack');
 
     // We call the function getContext('2d') on the canvas object
     // to get a "drawing context" which exposes drawing functions
@@ -92,6 +100,10 @@
 
     function onMouseUp(e) {
       isDrawing = false;
+      // Capture a snapshot of the canvas into an image.
+      var image = new Image();
+      image.src = myCanvas.toDataURL('image/png');
+      stack.insertBefore(image, myCanvas);
     }
 
     function addColor(color) {
