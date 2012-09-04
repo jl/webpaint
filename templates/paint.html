@@ -43,7 +43,7 @@
   <h1>Painting {{paint_id}}</h1>
   <div id="stack">
     <!-- img layers will be inserted here, before canvas -->
-    <canvas id="myCanvas" width="500" height="300"></canvas>
+    <canvas id="myCanvas"></canvas>
   </div>
   <div id="palette">
     <!-- Palette elements will be inserted here. -->
@@ -114,7 +114,7 @@
       var image = new Image();
       image.src = myCanvas.toDataURL('image/png');
       stack.insertBefore(image, myCanvas);
-      ctx.clearRect(0, 0, 500, 300);
+      ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
     }
 
     function addColor(color) {
@@ -146,6 +146,9 @@
     }
 
     // Event handler wiring.
+    myCanvas.width = stack.clientWidth;
+    myCanvas.height = stack.clientHeight;
+    console.log('canvas size', myCanvas.width, myCanvas.height);
     myCanvas.onmousemove = onMouseMove;
     myCanvas.onmousedown = onMouseDown;
     myCanvas.onmouseup = onMouseUp;
