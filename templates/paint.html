@@ -114,6 +114,7 @@
       var image = new Image();
       image.src = myCanvas.toDataURL('image/png');
       stack.insertBefore(image, myCanvas);
+      ctx.clearRect(0, 0, 500, 300);
     }
 
     function addColor(color) {
