@@ -3,10 +3,61 @@
 <head>
   <title>Painting {{paint_id}}</title>
   <style type="text/css">
+    body {
+      /* Sets default background and text color for the whole document. */
+      background-color: #444;
+      color: white;
+    }
+    #stack {
+      /*
+      Relative position without an offset (top, left, bottom, or right)
+      doesn't change the node's appearance in the flow, but does allow
+      the node's upper-left corner to be used as an anchor for
+      absolutely positioned descendants.
+      */
+      position: relative;
+      /*
+      We give stack an explicit width and height to match canvas.
+      Note that width and height doesn't include border (you can check
+      under "metrics" section of inspector).
+      */
+      width: 500px;
+      height: 300px;
+      /*
+      We put the background color in #stack instead of #myCanvas because
+      parent elements appear "below" all children. Also, putting the
+      border in the parent element means the child <img> and <canvas>
+      elements can be simply positioned at (0, 0) inside the border
+      without resorting to using weird offsets.
+      */
+      background-color: white;
+      border: solid 10px gray;
+    }
+    #stack img {
+      /*
+      Absolute position means offset from upper-left corner of
+      closest ancestor that has any position css value
+      (for example: absolute, relative, or fixed).
+      In this case, the <div id="stack"> has CSS position: relative
+      so its upper-left corner is the origin (0, 0).
+      Also, absolute position does NOT participate in page flow.
+      */
+      position: absolute;
+      left: 0px;
+      top: 0px;
+    }
     #myCanvas {
-      border: solid 1px gray;
+      /*
+      Because #myCanvas appears above all the sibling <img> layers,
+      putting a background color here would obscure them.
+      */
       cursor: crosshair;
       position: absolute;
+      left: 0px;
+      top: 0px;
+    }
+    #palette {
+      margin-top: 10px;
     }
     #palette div {
       /* #palette's children that are div's */
@@ -19,12 +70,6 @@
       /* put some space between the palette squares */
       margin-right: 3px;
       cursor: pointer;
-    }
-    #stack {
-      height: 310px;
-    }
-    #stack img {
-      position: absolute;
     }
   </style>
 </head>
@@ -98,12 +143,18 @@
       return false;
     }
 
+    // Capture a snapshot of each stroke into a separate <img> layer.
     function onMouseUp(e) {
       isDrawing = false;
-      // Capture a snapshot of the canvas into an image.
-      var image = new Image();
-      image.src = myCanvas.toDataURL('image/png');
-      stack.insertBefore(image, myCanvas);
+      var img = new Image();  // Creates a new <img> element.
+      img.src = myCanvas.toDataURL('image/png');
+      stack.insertBefore(img, myCanvas);
+
+      // Make sure that we clear the canvas so that each img captures
+      // only a single stroke. Note that we clear the canvas only after
+      // inserting the img to reduce flicker somewhat (on very slow
+      // systems, it might still flicker a bit).
+      ctx.clearRect(0, 0, 500, 300);
     }
 
     function addColor(color) {
