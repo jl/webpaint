@@ -44,6 +44,9 @@
   <h1>Painting {{paint_id}}</h1>
   <div id="stack">
     <!-- img layers will be inserted here, before canvas -->
+    {% for layer in layers %}
+    <img src="{{layer.data_url}}">
+    {% endfor %}
     <canvas id="myCanvas"></canvas>
   </div>
   <div id="palette">
@@ -113,9 +116,21 @@
       isDrawing = false;
       // Capture a snapshot of the canvas into an image.
       var image = new Image();
-      image.src = myCanvas.toDataURL('image/png');
+      var layer_id = String(Math.random());
+      var data_url = myCanvas.toDataURL('image/png');
+      image.src = data_url;
       stack.insertBefore(image, myCanvas);
+      console.log('layer inserted', layer_id, data_url.length);
       ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
+
+      // Upload to server.
+      var req = new XMLHttpRequest();
+      req.onreadystatechange = function(e) {
+        console.log('layer ready state', req.readyState, layer_id);
+      };
+      req.open('PUT', 'layer/' + layer_id, true);
+      req.setRequestHeader('Content-Type', 'application/octet-stream');
+      req.send(data_url);
     }
 
     function addColor(color) {
